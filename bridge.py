@@ -2,15 +2,14 @@ from flask import Flask, request, jsonify
 import requests
 import os
 from datetime import datetime
+import logging
 
 app = Flask(__name__)
 
 # Ambil token Webhook dari environment variable
 WEBHOOK_TOKEN = os.getenv("TRAKTEER_WEBHOOK_TOKEN")
-
 # Ambil URL server lokal (app.py di Railway atau Google Cloud)
 LOCAL_SERVER_URL = os.getenv("LOCAL_SERVER_URL", "http://localhost:5000")
-
 # Ambil token bot Telegram untuk notifikasi
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "0"))  # Pastikan bertipe integer
@@ -18,20 +17,21 @@ TELEGRAM_CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "0"))  # Pastikan bertipe i
 # Nominal pembayaran yang valid untuk VIP
 VIP_PRICING = {2000: 1, 5000: 3, 10000: 7, 30000: 30}  # {harga: hari VIP}
 
+logging.basicConfig(level=logging.INFO)
 
 def send_telegram_notification(message):
     """Mengirim notifikasi ke Telegram."""
     try:
+        logging.info("Mengirim notifikasi ke Telegram...")
         telegram_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         data = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
         response = requests.post(telegram_url, json=data)
         if response.status_code == 200:
-            print("✅ Notifikasi Telegram berhasil dikirim.")
+            logging.info("✅ Notifikasi Telegram berhasil dikirim.")
         else:
-            print(f"❌ Gagal mengirim notifikasi Telegram: {response.text}")
+            logging.error(f"❌ Gagal mengirim notifikasi Telegram: {response.text}")
     except Exception as e:
-        print(f"⚠️ ERROR: {e}")
-
+        logging.error(f"⚠️ ERROR: {e}")
 
 @app.route('/trakteer-webhook', methods=['POST'])
 def receive_webhook():
@@ -39,14 +39,13 @@ def receive_webhook():
     try:
         data = request.json
         received_token = request.headers.get("X-Webhook-Token")  # Webhook Token dari Trakteer
+        
+        print(f"📩 Received token: {received_token}")  # 🔍 Debugging
+        print(f"🎯 Expected token: {WEBHOOK_TOKEN}")  # 🔍 Debugging
 
         # 🔹 Cek apakah token cocok
         if received_token != WEBHOOK_TOKEN:
             return jsonify({"status": "error", "message": "Unauthorized"}), 403
-
-        # 🔹 Pastikan data valid
-        if not data or "supporter_message" not in data or "amount" not in data:
-            return jsonify({"status": "error", "message": "Data tidak valid"}), 400
 
         supporter_message = data["supporter_message"]  # Token pengguna
         amount = data["amount"]  # Nominal pembayaran
