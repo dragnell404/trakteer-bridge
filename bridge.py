@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # URL server lokal yang menjalankan app.py
-LOCAL_SERVER_URL = os.getenv("LOCAL_SERVER_URL", "http://your-local-server-ip:5000")
+LOCAL_SERVER_URL = os.getenv("LOCAL_SERVER_URL", "https://9b26-103-47-133-127.ngrok-free.app")
 
 @app.route('/trakteer-webhook', methods=['POST'])
 def receive_webhook():
