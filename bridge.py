@@ -6,10 +6,15 @@ import logging
 
 app = Flask(__name__)
 
-print("✅ LOCAL_SERVER_URL:", os.getenv("LOCAL_SERVER_URL"))
-print("✅ TELEGRAM_BOT_TOKEN:", os.getenv("TELEGRAM_BOT_TOKEN"))
-print("✅ TELEGRAM_CHAT_ID:", os.getenv("TELEGRAM_CHAT_ID"))
-print("✅ TRAKTEER_WEBHOOK_TOKEN:", os.getenv("TRAKTEER_WEBHOOK_TOKEN"))
+LOCAL_SERVER_URL = os.environ.get("LOCAL_SERVER_URL")
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+TRAKTEER_WEBHOOK_TOKEN = os.environ.get("TRAKTEER_WEBHOOK_TOKEN")
+
+print("✅ LOCAL_SERVER_URL:", repr(LOCAL_SERVER_URL))
+print("✅ TELEGRAM_BOT_TOKEN:", repr(TELEGRAM_BOT_TOKEN))
+print("✅ TELEGRAM_CHAT_ID:", repr(TELEGRAM_CHAT_ID))
+print("✅ TRAKTEER_WEBHOOK_TOKEN:", repr(TRAKTEER_WEBHOOK_TOKEN))
 
 
 # Nominal pembayaran yang valid untuk VIP
