@@ -6,13 +6,10 @@ import logging
 
 app = Flask(__name__)
 
-# Ambil token Webhook dari environment variable
-WEBHOOK_TOKEN = os.getenv("TRAKTEER_WEBHOOK_TOKEN")
-# Ambil URL server lokal (app.py di Railway atau Google Cloud)
-LOCAL_SERVER_URL = os.getenv("LOCAL_SERVER_URL", "http://localhost:5000")
-# Ambil token bot Telegram untuk notifikasi
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "0"))  # Pastikan bertipe integer
+print("🔍 LOCAL_SERVER_URL:", os.getenv("LOCAL_SERVER_URL"))
+print("🔍 TELEGRAM_BOT_TOKEN:", os.getenv("TELEGRAM_BOT_TOKEN"))
+print("🔍 TELEGRAM_CHAT_ID:", os.getenv("TELEGRAM_CHAT_ID"))
+print("🔍 TRAKTEER_WEBHOOK_TOKEN:", os.getenv("TRAKTEER_WEBHOOK_TOKEN"))
 
 # Nominal pembayaran yang valid untuk VIP
 VIP_PRICING = {2000: 1, 5000: 3, 10000: 7, 30000: 30}  # {harga: hari VIP}
